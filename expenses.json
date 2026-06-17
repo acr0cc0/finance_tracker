@@ -1,12 +1,5 @@
 [
     {
-        "id": "e3086f8d-8398-4078-b336-a8e633ce2641",
-        "date": "2026-06-17T16:55:15.595274",
-        "amount": 12.5,
-        "category": "Food",
-        "description": "Lunch at Taco Bell"
-    },
-    {
         "id": "ee430dc5-f806-4ebf-80af-106f6e9ffa45",
         "date": "2026-06-17T16:55:15.634703",
         "amount": 45.0,
@@ -19,12 +12,5 @@
         "amount": 10.0,
         "category": "Food",
         "description": "Snack"
-    },
-    {
-        "id": "35eb8f2b-60d4-46b7-af7d-72d01dfeaf73",
-        "date": "2026-06-17T17:19:53.564541",
-        "amount": 5.0,
-        "category": "Utilities",
-        "description": "onlyfans"
     }
 ]

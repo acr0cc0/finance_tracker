@@ -85,6 +85,7 @@ def list_expenses(category=None, date=None):
 
 def calculate_summary(period="all"):
     """Calculates and prints total spending, overall and per category."""
+    # ... (keeping existing implementation)
     expenses = load_expenses()
     if not expenses:
         print("No expenses recorded yet.")
@@ -124,6 +125,21 @@ def calculate_summary(period="all"):
         print(f"{cat:<15}: ${total:.2f}")
     print("-" * 30)
 
+def delete_expense(expense_id):
+    """Removes an expense by its ID."""
+    expenses = load_expenses()
+    initial_count = len(expenses)
+    
+    # Filter out the expense with the matching ID
+    updated_expenses = [e for e in expenses if e['id'] != expense_id]
+    
+    if len(updated_expenses) == initial_count:
+        print(f"Error: No expense found with ID {expense_id}")
+        return
+
+    save_expenses(updated_expenses)
+    print(f"Successfully deleted expense with ID: {expense_id}")
+
 def main():
     parser = argparse.ArgumentParser(description="Personal Finance Tracker CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -148,6 +164,10 @@ def main():
     summary_parser.add_argument("--period", type=str, choices=["all", "week", "month"], default="all", 
                                 help="Time period for the summary (all, week, month)")
 
+    # 'delete' command
+    delete_parser = subparsers.add_parser("delete", help="Delete an expense by ID")
+    delete_parser.add_argument("--id", type=str, required=True, help="The unique ID of the expense to delete")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -158,6 +178,8 @@ def main():
         list_expenses(category=args.category, date=args.date)
     elif args.command == "summary":
         calculate_summary(period=args.period)
+    elif args.command == "delete":
+        delete_expense(args.id)
     else:
         parser.print_help()
 
