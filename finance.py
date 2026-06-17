@@ -1,6 +1,6 @@
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 import argparse
 import os
 
@@ -83,6 +83,47 @@ def list_expenses(category=None, date=None):
 
     print_expenses_table(expenses)
 
+def calculate_summary(period="all"):
+    """Calculates and prints total spending, overall and per category."""
+    expenses = load_expenses()
+    if not expenses:
+        print("No expenses recorded yet.")
+        return
+
+    now = datetime.now()
+    start_date = None
+
+    if period == "week":
+        start_date = now - timedelta(days=7)
+    elif period == "month":
+        # Approximate month as 30 days for simplicity, or we could use calendar
+        start_date = now - timedelta(days=30)
+
+    filtered_expenses = []
+    for e in expenses:
+        exp_date = datetime.fromisoformat(e['date'])
+        if start_date is None or exp_date >= start_date:
+            filtered_expenses.append(e)
+
+    if not filtered_expenses:
+        print(f"No expenses found for the selected period: {period}")
+        return
+
+    total_overall = sum(e['amount'] for e in filtered_expenses)
+    category_totals = {}
+    for e in filtered_expenses:
+        cat = e['category']
+        category_totals[cat] = category_totals.get(cat, 0) + e['amount']
+
+    period_label = "overall" if period == "all" else f"the last {period}"
+    print(f"--- Summary Report ({period_label}) ---")
+    print(f"Total Spent: ${total_overall:.2f}")
+    print("-" * 30)
+    print("Spending by Category:")
+    for cat, total in sorted(category_totals.items(), key=lambda item: item[1], reverse=True):
+        print(f"{cat:<15}: ${total:.2f}")
+    print("-" * 30)
+
 def main():
     parser = argparse.ArgumentParser(description="Personal Finance Tracker CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -102,6 +143,11 @@ def main():
     list_parser.add_argument("--category", type=str, help="Filter by category")
     list_parser.add_argument("--date", type=str, help="Filter by date (YYYY-MM-DD)")
 
+    # 'summary' command
+    summary_parser = subparsers.add_parser("summary", help="Show spending summary")
+    summary_parser.add_argument("--period", type=str, choices=["all", "week", "month"], default="all", 
+                                help="Time period for the summary (all, week, month)")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -110,6 +156,8 @@ def main():
         list_categories()
     elif args.command == "list":
         list_expenses(category=args.category, date=args.date)
+    elif args.command == "summary":
+        calculate_summary(period=args.period)
     else:
         parser.print_help()
 
