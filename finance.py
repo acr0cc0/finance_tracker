@@ -52,11 +52,10 @@ def list_categories():
     for cat in DEFAULT_CATEGORIES:
         print(f"- {cat}")
 
-def list_expenses():
-    """Lists all expenses in a formatted table."""
-    expenses = load_expenses()
+def print_expenses_table(expenses):
+    """Helper to print a list of expenses in a formatted table."""
     if not expenses:
-        print("No expenses recorded yet.")
+        print("No matching expenses found.")
         return
 
     # Header
@@ -65,6 +64,24 @@ def list_expenses():
 
     for exp in expenses:
         print(f"{exp['id']:<38} {exp['date']:<25} {exp['category']:<15} ${exp['amount']:<9.2f} {exp['description']}")
+
+def list_expenses(category=None, date=None):
+    """Lists expenses, optionally filtered by category or date."""
+    expenses = load_expenses()
+    
+    if not expenses:
+        print("No expenses recorded yet.")
+        return
+
+    # Filter by category
+    if category:
+        expenses = [e for e in expenses if e['category'].lower() == category.lower()]
+    
+    # Filter by date (simple string match for the start of the ISO string)
+    if date:
+        expenses = [e for e in expenses if e['date'].startswith(date)]
+
+    print_expenses_table(expenses)
 
 def main():
     parser = argparse.ArgumentParser(description="Personal Finance Tracker CLI")
@@ -81,7 +98,9 @@ def main():
     subparsers.add_parser("list-categories", help="List all available categories")
 
     # 'list' command
-    subparsers.add_parser("list", help="List all expenses")
+    list_parser = subparsers.add_parser("list", help="List expenses (optional filters)")
+    list_parser.add_argument("--category", type=str, help="Filter by category")
+    list_parser.add_argument("--date", type=str, help="Filter by date (YYYY-MM-DD)")
 
     args = parser.parse_args()
 
@@ -90,7 +109,7 @@ def main():
     elif args.command == "list-categories":
         list_categories()
     elif args.command == "list":
-        list_expenses()
+        list_expenses(category=args.category, date=args.date)
     else:
         parser.print_help()
 
