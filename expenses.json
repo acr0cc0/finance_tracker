@@ -12,5 +12,12 @@
         "amount": 10.0,
         "category": "Food",
         "description": "Snack"
+    },
+    {
+        "id": "a10f797d-089a-4860-ba7f-fee6cc0b9ea2",
+        "date": "2026-06-17T18:37:42.483939",
+        "amount": 15.0,
+        "category": "Shopping",
+        "description": "New book"
     }
 ]
