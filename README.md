@@ -1,6 +1,6 @@
 # Personal Finance Tracker CLI
 
-A simple, lightweight command-line tool to track your daily expenses and monitor spending habits. This project was built as a demonstration of iterative development using a coding agent.
+A simple, lightweight command-line tool to track your daily expenses and monitor spending habits.
 
 ## Features
 
