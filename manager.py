@@ -100,3 +100,5 @@ class FinanceManager:
 
     def get_categories(self):
         return self.categories
+
+        
